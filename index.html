@@ -531,9 +531,9 @@
       name: "Galletitas & Cookies",
       products: [
         { id: 1, emoji: '<img src="coooookieclasica.jpg" alt="Cookie clásica" style="width:100%; height:100%; object-fit:cover;">', name: "Clásicas con chips", desc: "Masa suave con chips de chocolate, dorada por fuera y tierna por dentro.", price: 950, unit: "unidad" },
-        { id: 2, emoji: "🍪", name: "Cookie doble-chocolate", desc: "Masa de cacao con chips blancos y negros, bien intensa y húmeda.", price: 600, unit: "media docena" },
-        { id: 3, emoji: "🍪", name: "Red velvet cookie", desc: "Con chips de chocolate blanco y relleno de queso crema y azucar glass", price: 600, unit: "media docena" },
-        { id: 4, emoji: "🍪", name: "Cookies Oreo", desc: "Suave con pedacitos de Oreo en cada mordida, dulce y bien cremosa", price: 600, unit: "media docena" },
+        { id: 2, emoji: "🍪", name: "Cookie doble-chocolate", desc: "Masa de cacao con chips blancos y negros, bien intensa y húmeda.", price: 600, unit: "unidad" },
+        { id: 3, emoji: "🍪", name: "Red velvet cookie", desc: "Con chips de chocolate blanco y relleno de queso crema y azucar glass", price: 600, unit: "unidad" },
+        { id: 4, emoji: "🍪", name: "Cookies Oreo", desc: "Suave con pedacitos de Oreo en cada mordida, dulce y bien cremosa", price: 600, unit: "unidad" },
       ]
     },
   ];
@@ -612,16 +612,30 @@
     summary.innerHTML = lines.join('');
   }
 
+  function getTotalItems() {
+    return products.reduce((sum, p) => sum + quantities[p.id], 0);
+  }
   function toggleCart() {
     const panel = document.getElementById('cart-panel');
     if (panel.classList.contains('open')) {
       closeCart();
     } else {
+      // Validamos antes de abrir si cumple con el mínimo de 2
+      const totalGalletitas = getTotalItems();
+      if (totalGalletitas > 0 && totalGalletitas < 2) {
+        alert("¡Hola! El pedido mínimo es de 2 galletitas. Podés combinar los gustos que más te gusten ฅ^•ﻌ•^ฅ");
+        return;
+      }
       openCart();
     }
   }
 
   function openCart() {
+    const totalGalletitas = getTotalItems();
+    if (totalGalletitas > 0 && totalGalletitas < 2) {
+      alert("¡Hola! El pedido mínimo es de 2 galletitas. Podés combinar los gustos que más te gusten ฅ^•ﻌ•^ฅ");
+      return;
+    }
     document.getElementById('cart-panel').classList.add('open');
     document.getElementById('cart-overlay').classList.add('visible');
     document.body.style.overflow = 'hidden';
@@ -636,7 +650,11 @@
   function sendOrder() {
     const items = products.filter(p => quantities[p.id] > 0);
     if (items.length === 0) {
-      alert("Primero agregá algo al pedido 😊");
+      alert("Primero agregá algo al pedido ≽^•⩊•^≼");
+      return;
+    }
+    if (totalGalletitas < 2) {
+      alert("Para realizar el pedido tenés que elegir un mínimo de 2 galletitas (pueden ser de distintos gustos) ≽^•⩊•^≼");
       return;
     }
 
